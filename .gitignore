@@ -2,3 +2,5 @@
 .Rhistory
 .RData
 .Ruserdata
+events_log.csv
+Wikimedia datascience.Rproj
