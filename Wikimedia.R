@@ -27,27 +27,30 @@ events_log <- events_log %>%
   arrange(timestamp, session_id)
 
 # Q1: What is our daily overall clickthrough rate? How does it vary between the groups? ------------------------------
-## zero results rate: the proportion of searches that yielded 0 results
+## click through rate:  the proportion of search sessions where the user clicked on one of the results displayed
 
-# non.zero <- events_log %>% 
-#   filter(action == "searchResultPage",
-#          n_results > 0) %>% 
-#   group_by(date) %>% 
-#   summarise(sessions = n())
+# test <- events_log %>% 
+#   filter(session_id == "8ee241d030e9dd7c") %>% 
+#   arrange(timestamp)
 # 
-# zero <- events_log %>% 
-#   filter(action == "searchResultPage",
-#          n_results == 0) %>% 
-#   group_by(date) %>% 
-#   summarise(sessions = n())
+# test2 <- events_log %>% 
+#   filter(session_id == "96539ff273a06ee7") %>% 
+#   arrange(timestamp)
+# 
+# test3 <- events_log %>% 
+#   filter(session_id == "107c7917c8c667a5") %>% 
+#   arrange(timestamp)
+# 
+# test4 <- events_log %>% 
+#   filter(action == "searchResultPage")
 
-zero.results.rate <- events_log %>% 
-  filter(action == "searchResultPage") %>% 
+click.through.rate <- events_log %>% 
   group_by(date, group) %>% 
-  summarise(zero = sum(n_results == 0),
-            non.zero = sum(n_results > 0),
-            total = n()) %>% 
-  mutate(rate = zero/total * 100)
+  summarise(search = sum(action == "searchResultPage"),
+            visit = sum(action == "visitPage")
+  ) %>% 
+  mutate(rate = visit/search * 100)
+
   
 ## Q2: Which results do people tend to try first? How does it change day-to-day? -----------------------------------
 
@@ -79,29 +82,30 @@ result.choice <- events_log %>%
 
 
 # Q3: What is our daily overall zero results rate? How does it vary between the groups? -------------------------
-## click through rate:  the proportion of search sessions where the user clicked on one of the results displayed
 
-# test <- events_log %>% 
-#   filter(session_id == "8ee241d030e9dd7c") %>% 
-#   arrange(timestamp)
-# 
-# test2 <- events_log %>% 
-#   filter(session_id == "96539ff273a06ee7") %>% 
-#   arrange(timestamp)
-# 
-# test3 <- events_log %>% 
-#   filter(session_id == "107c7917c8c667a5") %>% 
-#   arrange(timestamp)
-# 
-# test4 <- events_log %>% 
-#   filter(action == "searchResultPage")
+## zero results rate: the proportion of searches that yielded 0 results
 
-click.through.rate <- events_log %>% 
+
+
+# non.zero <- events_log %>% 
+#   filter(action == "searchResultPage",
+#          n_results > 0) %>% 
+#   group_by(date) %>% 
+#   summarise(sessions = n())
+# 
+# zero <- events_log %>% 
+#   filter(action == "searchResultPage",
+#          n_results == 0) %>% 
+#   group_by(date) %>% 
+#   summarise(sessions = n())
+
+zero.results.rate <- events_log %>% 
+  filter(action == "searchResultPage") %>% 
   group_by(date, group) %>% 
-  summarise(search = sum(action == "searchResultPage"),
-            visit = sum(action == "visitPage")
-            ) %>% 
-  mutate(rate = visit/search * 100)
+  summarise(zero = sum(n_results == 0),
+            non.zero = sum(n_results > 0),
+            total = n()) %>% 
+  mutate(rate = zero/total * 100)
 
 
 # Data exploratie ---------------------------------------------------------
