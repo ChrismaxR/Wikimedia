@@ -17,7 +17,7 @@ events_log <- read_csv("events_log.csv",
                        col_types = cols(timestamp = col_character()))
 
 
-# Wrangle data ------------------------------------------------------------
+# Clean data ------------------------------------------------------------
 
 # dates
 events_log$timestamp <- ymd_hms(events_log$timestamp)
@@ -46,12 +46,18 @@ click.through.rate <- events_log %>%
 result.choice <- events_log %>% 
   filter(action == "visitPage") %>% 
   group_by(date) %>% 
-  summarise(first = sum(result_position))
-            #second = sum(result_position == 2),
-            #third = sum(result_position == 3),
-            #fourth = sum(result_position == 4)
-            #)
-
+  summarise(first = sum(result_position == 1, na.rm = T),
+            second = sum(result_position == 2, na.rm = T),
+            third = sum(result_position == 3, na.rm = T),
+            fourth = sum(result_position == 4, na.rm = T),
+            fifth = sum(result_position == 5, na.rm = T),
+            sixth = sum(result_position == 6, na.rm = T),
+            seventh = sum(result_position == 7, na.rm = T),
+            eigth = sum(result_position == 8, na.rm = T),
+            ninth = sum(result_position == 9, na.rm = T),
+            tenth = sum(result_position == 10, na.rm = T),
+            total= sum(result_position, na.rm = T)
+            )
 
 # Q3: What is our daily overall zero results rate? How does it vary between the groups? -------------------------
 
