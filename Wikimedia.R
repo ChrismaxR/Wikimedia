@@ -80,12 +80,26 @@ result.choice <- events_log %>%
   summarise(n = n()) %>% 
   ungroup() %>% 
   spread(result_position, n, fill = 0) %>% 
-  select(1:21) # filter columns to result_position = 20
+  select(1:21) # filter columns to result_position = 9
 
 # Visualise
-# heatmap <- ggplot(result.choice1, aes(variable, date))
+## bar chart
+choice.viz <- result.choice %>% 
+  gather(key = "n", value = "count", 2:10) %>% 
+  ggplot(aes(date, count)) +
+  geom_bar(aes(fill = n), stat = "identity", position = "dodge")
+choice.viz
 
-  
+## heat map
+heatmap <- result.choice %>% 
+  gather(key = "n", value = "count", 2:10) %>% 
+  ggplot(aes(date, n, fill = count)) +
+  geom_tile(aes(fill = as.numeric(count)), color = "white") +
+  scale_fill_gradient(low="white", high="steelblue") +
+  coord_flip() +
+  theme_minimal()
+heatmap
+
 
 # Q3: What is our daily overall zero results rate? How does it vary between the groups? -------------------------
 
