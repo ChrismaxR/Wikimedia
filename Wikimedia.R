@@ -5,11 +5,9 @@
 
 # Admin ----------------------------------------------------------------
 
-library('tidyr')
 library('readr')
 library('tidyverse')
 library('lubridate')
-library('reshape2')
 
 setwd("C:/Users/chris/OneDrive/Rstudio/Wikimedia datascience")
 theme_set(theme_light())
@@ -50,24 +48,26 @@ search.visit <- click.through.rate %>%
   gather(key = type, value = value, 3:4)
 
 
-ggplot(search.visit, aes(date, value)) +
+click.bar <- ggplot(search.visit, aes(date, value)) +
   geom_bar(aes(fill = type), stat = "identity", position = "dodge") +
   facet_grid(group ~ .) +
   scale_x_date() +
   labs(title = "Search vs. visits", 
        y = "# of Searches / Visits",
        x = NULL)
+click.bar
 
 click.rate <- click.through.rate %>%
   filter(!is.na(date)) %>%
   select(1,2,5)
   
-ggplot(click.rate, aes(date)) +
+click.line <- ggplot(click.rate, aes(date)) +
   geom_line(aes(y = rate, col = group), size = 2) +
   geom_point(aes(y = rate, col = group), size = 4) +
   labs(title = "Click Through Rate", 
        y = "% of Click troughs", 
        x = NULL)
+click.line
 
 # get all the dates on the x-axis
 
@@ -101,7 +101,7 @@ zero.results.rate <- events_log %>%
   mutate(rate = zero/total * 100)
 
 
-# visualise
+## Visualise
 zero.rate <- zero.results.rate %>%
   filter(!is.na(date)) %>%
   select(1,5)
@@ -123,7 +123,7 @@ zero.results.rate.group <- events_log %>%
             total = n()) %>% 
   mutate(rate = zero/total * 100)
 
-# visualise
+## Visualise
 zero.rate.group <- zero.results.rate.group %>%
   filter(!is.na(date)) %>%
   select(1,2,6)
