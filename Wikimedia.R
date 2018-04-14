@@ -24,6 +24,9 @@ events_log <- read_csv("events_log.csv",
 events_log$timestamp <- ymd_hms(events_log$timestamp)
 events_log$date <- date(events_log$timestamp)
 
+brks <- events_log$date[seq(1, length(events_log$date), 12)]
+lbls <- lubridate::date(brks)
+
 # arrange data
 events_log <- events_log %>% 
   arrange(timestamp, session_id)
@@ -97,11 +100,15 @@ heatmap <- result.choice %>%
   geom_tile(aes(fill = as.numeric(count)), color = "white") +
   scale_fill_gradient(low="white", high="steelblue") +
   coord_flip() +
-  theme_minimal()
+  theme_minimal() +
+  labs(title = "Heatmap: chosen results per day", 
+       y = "# Chosen result", 
+       x = NULL)
+  scale_x_date(labels = lbls, breaks = brks)
 heatmap
 
 
-# Q3: What is our daily overall zero results rate? How does it vary between the groups? -------------------------
+ # Q3: What is our daily overall zero results rate? How does it vary between the groups? -------------------------
 
 ## zero results rate: the proportion of searches that yielded 0 results
 
