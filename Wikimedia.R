@@ -54,16 +54,22 @@ ggplot(search.visit, aes(date, value)) +
   geom_bar(aes(fill = type), stat = "identity", position = "dodge") +
   facet_grid(group ~ .) +
   scale_x_date() +
-  labs(title = "Barchart Click Through Rate", 
-       subtitle = "Search vs. Visit",
-       y = "# of Searches/ Visits")
+  labs(title = "Search vs. visits", 
+       y = "# of Searches / Visits",
+       x = NULL)
 
-rate <- click.through.rate %>%
+click.rate <- click.through.rate %>%
   filter(!is.na(date)) %>%
   select(1,2,5)
   
-ggplot(rate, aes(date, rate)) +
-  geom_line()
+ggplot(click.rate, aes(date)) +
+  geom_line(aes(y = rate, col = group), size = 2) +
+  geom_point(aes(y = rate, col = group), size = 4) +
+  labs(title = "Click Through Rate", 
+       y = "% of Click troughs", 
+       x = NULL)
+
+# get all the dates on the x-axis
 
 ## Q2: Which results do people tend to try first? How does it change day-to-day? -----------------------------------
 
@@ -85,7 +91,31 @@ result.choice <- events_log %>%
 
 ## zero results rate: the proportion of searches that yielded 0 results
 
+#Overall zero results rate
 zero.results.rate <- events_log %>% 
+  filter(action == "searchResultPage") %>% 
+  group_by(date) %>% 
+  summarise(zero = sum(n_results == 0),
+            non.zero = sum(n_results > 0),
+            total = n()) %>% 
+  mutate(rate = zero/total * 100)
+
+
+# visualise
+zero.rate <- zero.results.rate %>%
+  filter(!is.na(date)) %>%
+  select(1,5)
+
+zero <- ggplot(zero.rate, aes(date)) +
+  geom_line(aes(y = rate), size = 2) +
+  geom_point(aes(y = rate), size = 4) +
+  labs(title = "Zero Results Rate", 
+       y = "% of Zero results", 
+       x = NULL)
+zero
+
+#Zero results rate per group
+zero.results.rate.group <- events_log %>% 
   filter(action == "searchResultPage") %>% 
   group_by(date, group) %>% 
   summarise(zero = sum(n_results == 0),
@@ -93,7 +123,18 @@ zero.results.rate <- events_log %>%
             total = n()) %>% 
   mutate(rate = zero/total * 100)
 
-# Visualise
+# visualise
+zero.rate.group <- zero.results.rate.group %>%
+  filter(!is.na(date)) %>%
+  select(1,2,6)
+
+zero.group <- ggplot(zero.rate.group, aes(date)) +
+  geom_line(aes(y = rate, col = group), size = 2) +
+  geom_point(aes(y = rate, col = group), size = 4) +
+  labs(title = "Zero Results Rate", 
+       y = "% of Zero results", 
+       x = NULL)
+zero.group
 
 # Q4: Let session length be approximately the time between the first event and the last event in a session. 
 # Choose a variable from the dataset and describe its relationship to session length. Visualize the relationship.
