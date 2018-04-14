@@ -5,6 +5,7 @@
 
 # Packages ----------------------------------------------------------------
 
+library('tidyr')
 library('readr')
 library('tidyverse')
 library('lubridate')
@@ -40,24 +41,30 @@ click.through.rate <- events_log %>%
   ) %>% 
   mutate(rate = visit/search * 100)
 
+# Visualise
+
+rate <- click.through.rate %>%
+  filter(!is.na(date)) 
+  
+p1 <- ggplot(rate) +
+         geom_bar(aes(date, rate))
+  
 
 ## Q2: Which results do people tend to try first? How does it change day-to-day? -----------------------------------
 
+# frequency table: chosen result number per day
 result.choice <- events_log %>% 
   filter(action == "visitPage") %>% 
-  group_by(date) %>% 
-  summarise(first = sum(result_position == 1, na.rm = T),
-            second = sum(result_position == 2, na.rm = T),
-            third = sum(result_position == 3, na.rm = T),
-            fourth = sum(result_position == 4, na.rm = T),
-            fifth = sum(result_position == 5, na.rm = T),
-            sixth = sum(result_position == 6, na.rm = T),
-            seventh = sum(result_position == 7, na.rm = T),
-            eigth = sum(result_position == 8, na.rm = T),
-            ninth = sum(result_position == 9, na.rm = T),
-            tenth = sum(result_position == 10, na.rm = T),
-            total= sum(result_position, na.rm = T)
-            )
+  group_by(date, result_position) %>% 
+  summarise(n = n()) %>% 
+  ungroup() %>% 
+  spread(result_position, n, fill = 0) %>% 
+  select(1:21) # filter columns to result_position = 20
+
+# Visualise
+# heatmap <- ggplot(result.choice1, aes(variable, date))
+
+  
 
 # Q3: What is our daily overall zero results rate? How does it vary between the groups? -------------------------
 
@@ -70,6 +77,12 @@ zero.results.rate <- events_log %>%
             non.zero = sum(n_results > 0),
             total = n()) %>% 
   mutate(rate = zero/total * 100)
+
+# Visualise
+
+# Q4: Let session length be approximately the time between the first event and the last event in a session. 
+# Choose a variable from the dataset and describe its relationship to session length. Visualize the relationship.
+
 
 
 # Data exploration ---------------------------------------------------------
