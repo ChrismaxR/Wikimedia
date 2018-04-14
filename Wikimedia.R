@@ -158,16 +158,49 @@ zero.group <- ggplot(zero.rate.group, aes(date)) +
        x = NULL)
 zero.group
 
-# Q4: Let session length be approximately the time between the first event and the last event in a session. 
+
+# Q4: Let session length be approximately the time between the first event and the last event in a session. ----------------------------------------------------------------------
 # Choose a variable from the dataset and describe its relationship to session length. Visualize the relationship.
 
-# get session length:approximately the time between the first event and the last event in a session.
+# get session length: approximately the time between the first event and the last event in a session.
+
+## concept: number of seconds between max($timestamp) & min($timestamp)
+View(test)
+max <- max(test$timestamp)
+min <- min(test$timestamp)
+dur <- duration(as.numeric(max)-as.numeric(min))
+
+# what is the general rule to compute the session length?
+
+## failed attempt
+# q4 <- slice(events_log, 1:500) %>% 
+#   group_by(session_id) %>% 
+#   summarise(group = group,
+#             max = as.numeric(max(timestamp)),
+#             min = as.numeric(min(timestamp))
+#            ) %>% 
+#   mutate(dur1 = max - min) 
+#%>%  mutate(dur2 = dseconds(duration(as.numeric(max)-as.numeric(min))))
+
+q4.1 <- slice(events_log, 1:500) %>%
+  mutate(timestamp = as.numeric(timestamp)) %>% 
+  group_by(group, date, page_id, session_id) %>% 
+  summarise(max = as.numeric(max(timestamp)),
+            min = as.numeric(min(timestamp))
+  ) %>% 
+  mutate(dur1 = max - min) # check out what variables I can include in the data, without loosing meaning. 
+                           # Two variables I can explore relationships with are: group & page_id
+  
+  
 
 # choose another variable to explore relationship
 
 # inspect relationship
 
 # visualise the relationship
+
+
+
 
 # Data exploration ---------------------------------------------------------
 
