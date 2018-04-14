@@ -24,8 +24,9 @@ events_log <- read_csv("events_log.csv",
 events_log$timestamp <- ymd_hms(events_log$timestamp)
 events_log$date <- date(events_log$timestamp)
 
-brks <- events_log$date[seq(1, length(events_log$date), 12)]
-lbls <- lubridate::date(brks)
+# Tried this to show all dates in heatmap viz, doesn't seem to work. 
+#brks <- events_log$date[seq(1, length(events_log$date), 12)]
+#lbls <- lubridate::date(brks)
 
 # arrange data
 events_log <- events_log %>% 
@@ -103,8 +104,8 @@ heatmap <- result.choice %>%
   theme_minimal() +
   labs(title = "Heatmap: chosen results per day", 
        y = "# Chosen result", 
-       x = NULL)
-  scale_x_date(labels = lbls, breaks = brks)
+       x = NULL) +
+  # scale_x_date(labels = lbls, breaks = brks)
 heatmap
 
 
@@ -160,7 +161,13 @@ zero.group
 # Q4: Let session length be approximately the time between the first event and the last event in a session. 
 # Choose a variable from the dataset and describe its relationship to session length. Visualize the relationship.
 
+# get session length:approximately the time between the first event and the last event in a session.
 
+# choose another variable to explore relationship
+
+# inspect relationship
+
+# visualise the relationship
 
 # Data exploration ---------------------------------------------------------
 
