@@ -3,14 +3,16 @@
 # https://github.com/wikimedia-research/Discovery-Hiring-Analyst-2016
 
 
-# Packages ----------------------------------------------------------------
+# Admin ----------------------------------------------------------------
 
 library('tidyr')
 library('readr')
 library('tidyverse')
 library('lubridate')
+library('reshape2')
 
 setwd("C:/Users/chris/OneDrive/Rstudio/Wikimedia datascience")
+theme_set(theme_light())
 
 # Get data ----------------------------------------------------------------
 
@@ -43,12 +45,25 @@ click.through.rate <- events_log %>%
 
 # Visualise
 
+search.visit <- click.through.rate %>%
+  filter(!is.na(date)) %>% 
+  gather(key = type, value = value, 3:4)
+
+
+ggplot(search.visit, aes(date, value)) +
+  geom_bar(aes(fill = type), stat = "identity", position = "dodge") +
+  facet_grid(group ~ .) +
+  scale_x_date() +
+  labs(title = "Barchart Click Through Rate", 
+       subtitle = "Search vs. Visit",
+       y = "# of Searches/ Visits")
+
 rate <- click.through.rate %>%
-  filter(!is.na(date)) 
+  filter(!is.na(date)) %>%
+  select(1,2,5)
   
-p1 <- ggplot(rate) +
-         geom_bar(aes(date, rate))
-  
+ggplot(rate, aes(date, rate)) +
+  geom_line()
 
 ## Q2: Which results do people tend to try first? How does it change day-to-day? -----------------------------------
 
