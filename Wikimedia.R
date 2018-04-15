@@ -49,29 +49,26 @@ click.through.rate <- events_log %>%
 
 search.visit <- click.through.rate %>%
   filter(!is.na(date)) %>% 
-  gather(key = type, value = value, 3:4)
-
-
-click.bar <- ggplot(search.visit, aes(date, value)) +
+  gather(key = type, value = value, 3:4) %>% 
+  ggplot(aes(date, value)) +
   geom_bar(aes(fill = type), stat = "identity", position = "dodge") +
   facet_grid(group ~ .) +
   scale_x_date() +
   labs(title = "Search vs. visits", 
        y = "# of Searches / Visits",
        x = NULL)
-click.bar
+search.visit
 
 click.rate <- click.through.rate %>%
   filter(!is.na(date)) %>%
-  select(1,2,5)
-  
-click.line <- ggplot(click.rate, aes(date)) +
+  select(1,2,5) %>% 
+  ggplot(aes(date)) +
   geom_line(aes(y = rate, col = group), size = 2) +
   geom_point(aes(y = rate, col = group), size = 4) +
   labs(title = "Click Through Rate", 
        y = "% of Click troughs", 
        x = NULL)
-click.line
+click.rate
 
 # get all the dates on the x-axis
 
@@ -104,8 +101,8 @@ heatmap <- result.choice %>%
   theme_minimal() +
   labs(title = "Heatmap: chosen results per day", 
        y = "# Chosen result", 
-       x = NULL) +
-  # scale_x_date(labels = lbls, breaks = brks)
+       x = NULL) 
+  # + scale_x_date(labels = lbls, breaks = brks)
 heatmap
 
 
@@ -126,15 +123,14 @@ zero.results.rate <- events_log %>%
 ## Visualise
 zero.rate <- zero.results.rate %>%
   filter(!is.na(date)) %>%
-  select(1,5)
-
-zero <- ggplot(zero.rate, aes(date)) +
+  select(1,5) %>% 
+  ggplot(aes(date)) +
   geom_line(aes(y = rate), size = 2) +
   geom_point(aes(y = rate), size = 4) +
   labs(title = "Zero Results Rate", 
        y = "% of Zero results", 
        x = NULL)
-zero
+zero.rate
 
 #Zero results rate per group
 zero.results.rate.group <- events_log %>% 
@@ -148,15 +144,14 @@ zero.results.rate.group <- events_log %>%
 ## Visualise
 zero.rate.group <- zero.results.rate.group %>%
   filter(!is.na(date)) %>%
-  select(1,2,6)
-
-zero.group <- ggplot(zero.rate.group, aes(date)) +
+  select(1,2,6) %>% 
+  ggplot(aes(date)) +
   geom_line(aes(y = rate, col = group), size = 2) +
   geom_point(aes(y = rate, col = group), size = 4) +
   labs(title = "Zero Results Rate", 
        y = "% of Zero results", 
        x = NULL)
-zero.group
+zero.rate.group
 
 
 # Q4: Let session length be approximately the time between the first event and the last event in a session. ----------------------------------------------------------------------
@@ -165,10 +160,10 @@ zero.group
 # get session length: approximately the time between the first event and the last event in a session.
 
 ## concept: number of seconds between max($timestamp) & min($timestamp)
-View(test)
-max <- max(test$timestamp)
-min <- min(test$timestamp)
-dur <- duration(as.numeric(max)-as.numeric(min))
+# View(test)
+# max <- max(test$timestamp)
+# min <- min(test$timestamp)
+# dur <- duration(as.numeric(max)-as.numeric(min))
 
 # what is the general rule to compute the session length?
 
