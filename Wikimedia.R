@@ -183,8 +183,38 @@ q4.1 <- slice(events_log, 1:500) %>%
   summarise(max = as.numeric(max(timestamp)),
             min = as.numeric(min(timestamp))
   ) %>% 
-  mutate(dur1 = max - min) # check out what variables I can include in the data, without loosing meaning. 
-                           # Two variables I can explore relationships with are: group & page_id
+  mutate(dur = max - min) %>% 
+  group_by(group) %>% 
+  summarise(avg.dur = mean(dur, na.rm = T),
+            median.dur = median(dur, na.rm = T),
+            sd.dur = sd(dur), 
+            min.dur = min(dur),
+            max.dur = max(dur)
+            ) %>% 
+  gather(key = stat, value = value, 2:6) %>% 
+  ggplot(aes(group, value)) +
+  geom_bar(stat = 'identity') +
+  facet_grid(stat ~ .)
+
+rel.group <- events_log %>%
+  mutate(timestamp = as.numeric(timestamp)) %>% 
+  group_by(group, date, page_id, session_id) %>% 
+  summarise(max = as.numeric(max(timestamp)),
+            min = as.numeric(min(timestamp))
+  ) %>% 
+  mutate(dur = max - min) %>% 
+  group_by(group) %>% 
+  summarise(avg.dur = mean(dur, na.rm = T),
+            median.dur = median(dur, na.rm = T),
+            sd.dur = sd(dur)
+            )
+  
+  
+  ggplot(aes(group, avg.dur)) +
+  geom_bar(stat = 'identity')
+
+# check out what variables I can include in the data, without loosing meaning. 
+# Two variables I can explore relationships with are: group & page_id
   
   
 
